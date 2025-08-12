@@ -1,9 +1,10 @@
-import { prisma } from '../../db/prisma';
-export async function listUserAppointments(userId) { return prisma.appointment.findMany({ where: { userId }, include: { services: { include: { service: true } }, barber: true }, orderBy: { date: 'asc' } }); }
-export async function createAppointment(data) { const services = await prisma.service.findMany({ where: { id: { in: data.serviceIds } } }); if (services.length !== data.serviceIds.length) {
+import { AppointmentModel } from '../../models/Appointment';
+import { ServiceModel } from '../../models/Service';
+export async function listUserAppointments(userId) { return AppointmentModel.find({ userId }).populate('barberId', 'name').sort({ date: 1 }); }
+export async function createAppointment(data) { const services = await ServiceModel.find({ _id: { $in: data.serviceIds } }).populate('categoryId', 'name'); if (services.length !== data.serviceIds.length) {
     throw { status: 400, message: 'Serviço inválido.' };
-} const total = services.reduce((sum, s) => sum + Number(s.price), 0); const conflict = await prisma.appointment.findFirst({ where: { barberId: data.barberId, date: new Date(data.date), time: data.time, status: { not: 'CANCELLED' } } }); if (conflict)
-    throw { status: 409, message: 'Horário indisponível.' }; return prisma.appointment.create({ data: { userId: data.userId, clientName: data.clientName, barberId: data.barberId, date: new Date(data.date), time: data.time, totalPrice: total, notes: data.notes, services: { create: data.serviceIds.map(id => ({ serviceId: id })) } }, include: { services: { include: { service: true } } } }); }
-export async function cancelAppointment(id, userId) { const appt = await prisma.appointment.findUnique({ where: { id } }); if (!appt || appt.userId !== userId)
+} const total = services.reduce((sum, s) => sum + Number(s.price), 0); const conflict = await AppointmentModel.findOne({ barberId: data.barberId, date: new Date(data.date), time: data.time, status: { $ne: 'CANCELLED' } }); if (conflict)
+    throw { status: 409, message: 'Horário indisponível.' }; const appointmentServices = services.map(s => ({ serviceId: s.id, name: s.name, price: s.price })); return AppointmentModel.create({ userId: data.userId, clientName: data.clientName, barberId: data.barberId, date: new Date(data.date), time: data.time, totalPrice: total, notes: data.notes, services: appointmentServices }); }
+export async function cancelAppointment(id, userId) { const appt = await AppointmentModel.findById(id); if (!appt || appt.userId.toString() !== userId)
     throw { status: 404, message: 'Agendamento não encontrado.' }; if (appt.status === 'CANCELLED')
-    return appt; return prisma.appointment.update({ where: { id }, data: { status: 'CANCELLED' } }); }
+    return appt; return AppointmentModel.findByIdAndUpdate(id, { status: 'CANCELLED' }, { new: true }); }

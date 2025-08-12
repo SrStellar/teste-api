@@ -5,7 +5,7 @@ import { availabilityQuerySchema, createAppointmentSchema } from '../../schemas/
 import { getUnavailableSlots } from './availability.service';
 import { deleteAppointment, getMyAppointments, postAppointment } from './appointment.controller';
 export const appointmentRouter = Router();
-apointmentRouter.get('/appointments/availability', validate(availabilityQuerySchema), async (req, res) => { const { barberId, date } = req.query as any; const unavailable = await getUnavailableSlots(parseInt(barberId, 10), date); res.json(unavailable); });
-apointmentRouter.get('/user/appointments', authMiddleware, getMyAppointments);
-apointmentRouter.post('/user/appointments', authMiddleware, validate(createAppointmentSchema), postAppointment);
-apointmentRouter.delete('/user/appointments/:id', authMiddleware, deleteAppointment);
+appointmentRouter.get('/appointments/availability', validate(availabilityQuerySchema), async (req, res) => { const { barberId, date } = req.query as any; const unavailable = await getUnavailableSlots(barberId, date); res.json(unavailable); });
+appointmentRouter.get('/user/appointments', authMiddleware, getMyAppointments);
+appointmentRouter.post('/user/appointments', authMiddleware, validate(createAppointmentSchema), postAppointment);
+appointmentRouter.delete('/user/appointments/:id', authMiddleware, deleteAppointment);

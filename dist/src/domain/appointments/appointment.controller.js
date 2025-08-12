@@ -9,7 +9,7 @@ catch (e) {
     next(e);
 } }
 export async function deleteAppointment(req, res, next) { try {
-    const id = parseInt(req.params.id, 10);
+    const id = req.params.id;
     await cancelAppointment(id, req.user.id);
     res.status(204).send();
 }

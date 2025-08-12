@@ -1,20 +1,19 @@
 # Padilha Barbershop API
 
 ## Stack
-Node.js + TypeScript + Express + Prisma + PostgreSQL + JWT (access/refresh) + Zod
+Node.js + TypeScript + Express + MongoDB + Mongoose + JWT (access/refresh) + Zod
 
 ## Scripts
 - Dev: `npm run dev`
 - Build: `npm run build`
 - Start: `npm start`
-- Migrate: `npm run migrate`
 - Seed: `npm run seed`
 
 ## Setup
 1. Copiar `.env.example` para `.env` e ajustar valores.
 2. `npm install`
-3. `npx prisma migrate dev --name init`
-4. `npx prisma db seed`
+3. Configurar MONGODB_URI no .env (ex: `mongodb://localhost:27017/padilha`)
+4. `npm run seed`
 5. `npm run dev`
 
 ## Endpoints Principais
@@ -27,6 +26,9 @@ Ver documentação original fornecida (rotas prefixadas por /api/v1).
 - Logout: POST /api/v1/logout
 
 Enviar Authorization: Bearer <accessToken> nas rotas protegidas.
+
+## Banco de Dados
+A aplicação utiliza MongoDB com Mongoose. Os IDs são ObjectIds do MongoDB (strings) em vez de inteiros incrementais.
 
 ## Gerar ZIP
 ```
