@@ -1,34 +1,55 @@
 # Padilha Barbershop API
 
 ## Stack
-Node.js + TypeScript + Express + Prisma + PostgreSQL + JWT (access/refresh) + Zod
+Node.js + TypeScript + Express + MongoDB + Mongoose + JWT (access/refresh) + Zod
 
-## Scripts
-- Dev: `npm run dev`
-- Build: `npm run build`
-- Start: `npm start`
-- Migrate: `npm run migrate`
-- Seed: `npm run seed`
+*Migration from Prisma/PostgreSQL to MongoDB is complete.*
+
+## Requirements
+- Node.js >= 18 (recommended)
+- MongoDB database
 
 ## Setup
-1. Copiar `.env.example` para `.env` e ajustar valores.
-2. `npm install`
-3. `npx prisma migrate dev --name init`
-4. `npx prisma db seed`
-5. `npm run dev`
+1. Copy `.env.example` to `.env` and configure your environment variables:
+   - `MONGODB_URI`: Your MongoDB connection string
+   - `JWT_SECRET`: A secure secret key for JWT signing
+   - `JWT_EXPIRES_IN`: Access token expiration (default: 15m)
+   - `REFRESH_EXPIRES_IN`: Refresh token expiration (default: 7d)
+   - `PORT`: Server port (default: 3000)
 
-## Endpoints Principais
-Ver documentação original fornecida (rotas prefixadas por /api/v1).
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-## Autenticação
-- Login: POST /api/v1/login
-- Registrar: POST /api/v1/register
-- Refresh: POST /api/v1/refresh
-- Logout: POST /api/v1/logout
+3. Start development server:
+   ```bash
+   npm run dev
+   ```
 
-Enviar Authorization: Bearer <accessToken> nas rotas protegidas.
+## Scripts
+- **Development**: `npm run dev` - Start development server with hot reload
+- **Build**: `npm run build` - Compile TypeScript to JavaScript
+- **Start**: `npm start` - Start production server
+- **Lint**: `npm run lint` - Run ESLint code analysis
+- **Test**: `npm run test` - Run test suite
 
-## Gerar ZIP
+## ESLint Configuration
+The project uses ESLint 8.57.0 for code linting with TypeScript support. All peer dependency conflicts have been resolved.
+
+## API Endpoints
+All routes are prefixed with `/api/v1`.
+
+### Authentication
+- **Login**: `POST /api/v1/login`
+- **Register**: `POST /api/v1/register`
+- **Refresh Token**: `POST /api/v1/refresh`
+- **Logout**: `POST /api/v1/logout`
+
+For protected routes, include the authorization header:
 ```
-zip -r padilha-barbershop-api.zip .
+Authorization: Bearer <accessToken>
 ```
+
+## Development
+The API is production-ready and fully migrated to MongoDB with Mongoose ODM.
