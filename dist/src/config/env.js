@@ -1,0 +1,2 @@
+import 'dotenv/config';
+export const env = { port: parseInt(process.env.PORT || '3000', 10), jwtSecret: process.env.JWT_SECRET || 'dev-secret', jwtAccessTtl: process.env.JWT_ACCESS_TTL || '15m', jwtRefreshTtl: process.env.JWT_REFRESH_TTL || '30d', nodeEnv: process.env.NODE_ENV || 'development' };

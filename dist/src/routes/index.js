@@ -1,0 +1,18 @@
+import { Router } from 'express';
+import { authRouter } from '../domain/auth/auth.routes';
+import { barberRouter } from '../domain/barbers/barber.routes';
+import { serviceRouter } from '../domain/services/service.routes';
+import { galleryRouter } from '../domain/gallery/gallery.routes';
+import { contactRouter } from '../domain/contact/contact.routes';
+import { appointmentRouter } from '../domain/appointments/appointment.routes';
+import { authMiddleware } from '../middleware/auth';
+import { requireRole } from '../middleware/role';
+import { prisma } from '../db/prisma';
+export const apiRouter = Router();
+apiRouter.use(authRouter);
+apiRouter.use(barberRouter);
+apiRouter.use(serviceRouter);
+apiRouter.use(galleryRouter);
+apiRouter.use(contactRouter);
+apiRouter.use(appointmentRouter);
+apiRouter.get('/admin/appointments', authMiddleware, requireRole('admin'), async (_req, res) => { const appts = await prisma.appointment.findMany({ include: { barber: true, services: { include: { service: true } } } }); res.json(appts); });

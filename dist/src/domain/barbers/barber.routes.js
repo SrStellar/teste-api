@@ -1,0 +1,12 @@
+import { Router } from 'express';
+import { createBarber, deleteBarber, listBarbers, updateBarber } from './barber.controller';
+import { authMiddleware } from '../../middleware/auth';
+import { requireRole } from '../../middleware/role';
+import { validate } from '../../middleware/validate';
+import { createBarberSchema, updateBarberSchema } from '../../schemas/barber';
+export const barberRouter = Router();
+barberRouter.get('/barbers', listBarbers);
+barberRouter.get('/admin/barbers', authMiddleware, requireRole('admin'), listBarbers);
+barberRouter.post('/admin/barbers', authMiddleware, requireRole('admin'), validate(createBarberSchema), createBarber);
+barberRouter.put('/admin/barbers/:id', authMiddleware, requireRole('admin'), validate(updateBarberSchema), updateBarber);
+barberRouter.delete('/admin/barbers/:id', authMiddleware, requireRole('admin'), deleteBarber);

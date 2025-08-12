@@ -1,0 +1,3 @@
+import { z } from 'zod';
+export const createBarberSchema = z.object({ body: z.object({ name: z.string().min(2), email: z.string().email(), password: z.string().min(6), specialty: z.string().optional(), experience: z.string().optional(), imageUrl: z.string().url().optional() }) });
+export const updateBarberSchema = z.object({ body: z.object({ name: z.string().min(2).optional(), specialty: z.string().optional(), experience: z.string().optional(), imageUrl: z.string().url().optional() }) });

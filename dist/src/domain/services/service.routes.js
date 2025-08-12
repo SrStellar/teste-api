@@ -1,0 +1,15 @@
+import { Router } from 'express';
+import { listServiceCategories, createCategory, updateCategory, deleteCategory } from './serviceCategory.controller';
+import { createService, deleteService, updateService } from './service.controller';
+import { authMiddleware } from '../../middleware/auth';
+import { requireRole } from '../../middleware/role';
+import { validate } from '../../middleware/validate';
+import { createCategorySchema, updateCategorySchema, createServiceSchema, updateServiceSchema } from '../../schemas/services';
+export const serviceRouter = Router();
+serviceRouter.get('/services', listServiceCategories);
+serviceRouter.post('/admin/service-categories', authMiddleware, requireRole('admin'), validate(createCategorySchema), createCategory);
+serviceRouter.put('/admin/service-categories/:id', authMiddleware, requireRole('admin'), validate(updateCategorySchema), updateCategory);
+serviceRouter.delete('/admin/service-categories/:id', authMiddleware, requireRole('admin'), deleteCategory);
+serviceRouter.post('/admin/services', authMiddleware, requireRole('admin'), validate(createServiceSchema), createService);
+serviceRouter.put('/admin/services/:id', authMiddleware, requireRole('admin'), validate(updateServiceSchema), updateService);
+serviceRouter.delete('/admin/services/:id', authMiddleware, requireRole('admin'), deleteService);
