@@ -1,0 +1,11 @@
+import { Router } from 'express';
+import { listGallery, createGalleryItem, updateGalleryItem, deleteGalleryItem } from './gallery.controller';
+import { authMiddleware } from '../../middleware/auth';
+import { requireRole } from '../../middleware/role';
+import { validate } from '../../middleware/validate';
+import { galleryItemSchema } from '../../schemas/gallery';
+export const galleryRouter = Router();
+galleryRouter.get('/gallery', listGallery);
+galleryRouter.post('/admin/gallery', authMiddleware, requireRole('admin'), validate(galleryItemSchema), createGalleryItem);
+galleryRouter.put('/admin/gallery/:id', authMiddleware, requireRole('admin'), validate(galleryItemSchema), updateGalleryItem);
+galleryRouter.delete('/admin/gallery/:id', authMiddleware, requireRole('admin'), deleteGalleryItem);

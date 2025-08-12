@@ -1,0 +1,14 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql" url = env("DATABASE_URL") }
+
+model User { id Int @id @default(autoincrement()) name String email String @unique passwordHash String role UserRole createdAt DateTime @default(now()) updatedAt DateTime @updatedAt barber Barber? appointments Appointment[] refreshTokens RefreshToken[] }
+model Barber { id Int @id @default(autoincrement()) user User? @relation(fields: [userId], references: [id]) userId Int? @unique name String specialty String? experience String? imageUrl String? appointments Appointment[] createdAt DateTime @default(now()) updatedAt DateTime @updatedAt }
+model ServiceCategory { id Int @id @default(autoincrement()) name String services Service[] createdAt DateTime @default(now()) updatedAt DateTime @updatedAt }
+model Service { id Int @id @default(autoincrement()) category ServiceCategory @relation(fields: [categoryId], references: [id]) categoryId Int name String price Decimal @db.Decimal(10,2) appointments AppointmentService[] createdAt DateTime @default(now()) updatedAt DateTime @updatedAt }
+model Appointment { id Int @id @default(autoincrement()) user User @relation(fields: [userId], references: [id]) userId Int clientName String barber Barber @relation(fields: [barberId], references: [id]) barberId Int date DateTime time String status AppointmentStatus @default(SCHEDULED) totalPrice Decimal @db.Decimal(10,2) notes String? services AppointmentService[] createdAt DateTime @default(now()) updatedAt DateTime @updatedAt @@unique([barberId, date, time]) }
+model AppointmentService { appointment Appointment @relation(fields: [appointmentId], references: [id]) appointmentId Int service Service @relation(fields: [serviceId], references: [id]) serviceId Int @@id([appointmentId, serviceId]) }
+model GalleryItem { id Int @id @default(autoincrement()) title String description String? imageUrl String createdAt DateTime @default(now()) updatedAt DateTime @updatedAt }
+model ContactInfo { id Int @id @default(autoincrement()) phone String? email String? address String? instagram String? twitter String? facebook String? updatedAt DateTime @updatedAt }
+model RefreshToken { id Int @id @default(autoincrement()) user User @relation(fields: [userId], references: [id]) userId Int token String @unique expiresAt DateTime revoked Boolean @default(false) createdAt DateTime @default(now()) }
+enum UserRole { customer admin barber }
+enum AppointmentStatus { SCHEDULED COMPLETED CANCELLED }

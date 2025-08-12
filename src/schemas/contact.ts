@@ -1,0 +1,2 @@
+import { z } from 'zod';
+export const contactInfoSchema = z.object({ body: z.object({ phone: z.string().optional(), email: z.string().email().optional(), address: z.string().optional(), instagram: z.string().optional(), twitter: z.string().optional(), facebook: z.string().optional() }) });
